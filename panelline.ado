@@ -109,7 +109,7 @@ program define panelline
         * y labels only on the first panel; others keep the same scale but hide
         if "`noycommon'"=="" {
             if `j'==1 local ypanlab `"ylabel(`yrule', angle(0) nogrid labels)"'
-            else      local ypanlab `"ylabel(`yrule', angle(0) nogrid nolabels noticks)"'
+            else      local ypanlab `"ylabel(`yrule', angle(0) nogrid nolabels noticks) yscale(off)"'
         }
         else local ypanlab `"ylabel(`yrule', angle(0) nogrid)"'
 

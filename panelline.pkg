@@ -1,0 +1,16 @@
+v 3
+d panelline: Small-multiples line plot (FT-style) with end-point dots
+d
+d One time-series sub-plot per group on a shared y-axis, with an end-point dot
+d on each line. Long-format input (panel, time, value).
+d
+d Requires: Stata 16 or newer.
+d
+d Author: Wen-Cheng Lin, Academia Sinica
+d Source: https://github.com/ganma0517/stata_panelline
+d
+d Distribution-Date: 20260602
+d
+f panelline.ado
+f panelline.sthlp
+f panelline_demo.dta

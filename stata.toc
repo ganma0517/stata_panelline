@@ -1,0 +1,4 @@
+v 3
+d Stata packages by Wen-Cheng Lin
+d https://github.com/ganma0517/stata_panelline
+p panelline  Small-multiples line plot (FT-style) with end-point dots

@@ -34,7 +34,8 @@
 {synopt:{opt cols(#)}}number of columns (default: auto){p_end}
 
 {syntab:Lines and dots}
-{synopt:{opt l:color(string)}}line color; default {cmd:"31 119 180"}{p_end}
+{synopt:{opt l:color(string)}}line color for all panels; default {cmd:"31 119 180"}{p_end}
+{synopt:{opt colors(string)}}explicit colour per panel as {it:value=colour} pairs, e.g. {cmd:colors(KMT=blue DPP=green TPP=gs8)}{p_end}
 {synopt:{opt lw:idth(string)}}line width; default {cmd:medium}{p_end}
 {synopt:{opt noend:dot}}do not draw the end-point dot{p_end}
 {synopt:{opt dotc:olor(string)}}end-dot color; default = line color{p_end}
@@ -78,6 +79,13 @@ long format: one observation per panel-time.
 
 {phang}{opt lcolor()}, {opt lwidth()} style the line; {opt noenddot},
 {opt dotcolor()}, {opt dotsize()} control the end-point dot.
+
+{phang}{opt colors(string)} gives specific panels their own colour as
+{it:value=colour} pairs, e.g.
+{cmd:colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)}. The key may be the
+panel's value label or its raw value (use the raw value when the label contains
+spaces); panels not listed keep {opt lcolor()}. The line, the end-dot, and the
+panel title all take the mapped colour.
 
 {phang}{opt noycommon} lets each panel use its own y-axis (default: shared).
 {opt ylabel()} / {opt xlabel()} apply the same axis rules to all panels.

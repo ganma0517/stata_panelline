@@ -12,7 +12,9 @@
 *! Options:
 *!   cols(#)            number of columns (default: auto)
 *!   noenddot           do not draw the end-point dot
-*!   lcolor(string)     line color (default "31 119 180")
+*!   lcolor(string)     line color for all panels (default "31 119 180")
+*!   colors(string)     explicit colour per panel as value=colour pairs, e.g.
+*!                      colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)
 *!   lwidth(string)     line width (default medium)
 *!   dotcolor(string)   end-dot color (default = lcolor)
 *!   dotsize(string)    end-dot size (default medium)
@@ -29,7 +31,7 @@ program define panelline
     version 16.0
     syntax varname(numeric) [if] [in], Over(varname) Time(varname) ///
         [ COLs(integer 0) NOENDdot LColor(string) LWidth(string) ///
-          DOTColor(string) DOTSize(string) NOYCommon ///
+          COLORS(string asis) DOTColor(string) DOTSize(string) NOYCommon ///
           YLABel(string asis) XLABel(string asis) ///
           title(string asis) SUBtitle(string asis) YTITle(string asis) ///
           saving(string) name(string) ]
@@ -40,6 +42,7 @@ program define panelline
 
     if "`lcolor'"   == "" local lcolor "31 119 180"
     if "`lwidth'"   == "" local lwidth "medium"
+    local dotset = ("`dotcolor'"!="")
     if "`dotcolor'" == "" local dotcolor "`lcolor'"
     if "`dotsize'"  == "" local dotsize "medium"
     if "`name'"     == "" local name "panelline"
@@ -87,6 +90,23 @@ program define panelline
         local plab : label (`over') `pl'
         if `"`plab'"'=="" local plab "`pl'"
 
+        * resolve this panel's colour: default = lcolor; an explicit
+        * colors("group=colour") mapping overrides it (key = label or value).
+        local pcol "`lcolor'"
+        if `"`colors'"'!="" {
+            foreach kv of local colors {
+                local eq = strpos(`"`kv'"',"=")
+                if `eq' {
+                    local kk = substr(`"`kv'"',1,`eq'-1)
+                    local cc = substr(`"`kv'"',`eq'+1,.)
+                    if `"`kk'"'==`"`plab'"' | `"`kk'"'=="`pl'" local pcol `"`cc'"'
+                }
+            }
+        }
+        * end-dot follows the panel colour unless dotcolor() was set explicitly
+        if `dotset' local pdot "`dotcolor'"
+        else        local pdot "`pcol'"
+
         * end point (last non-missing time within panel)
         quietly summarize `time' if `over'==`pl' & !missing(`y'), meanonly
         local tend = r(max)
@@ -97,7 +117,7 @@ program define panelline
 
         local dotlayer ""
         if "`noenddot'"=="" {
-            local dotlayer `"(scatteri `yend' `tend', mcolor("`dotcolor'") msize(`dotsize') msymbol(O))"'
+            local dotlayer `"(scatteri `yend' `tend', mcolor("`pdot'") msize(`dotsize') msymbol(O))"'
         }
 
         * force the SAME y range on every panel so the line heights align
@@ -117,13 +137,13 @@ program define panelline
         if `"`xlabel'"'!="" local xpanlab `"xlabel(`xlabel', format(%4.0f))"'
         else                local xpanlab `"xlabel(, format(%4.0f))"'
 
-        twoway (line `y' `time' if `over'==`pl', lcolor("`lcolor'") lwidth(`lwidth')) ///
+        twoway (line `y' `time' if `over'==`pl', lcolor("`pcol'") lwidth(`lwidth')) ///
                `dotlayer' ///
                , `yopt' ///
                  `ypanlab' ///
                  `xpanlab' ///
                  ytitle("") xtitle("") ///
-                 title(`"`plab'"', color("`lcolor'") size(medsmall)) ///
+                 title(`"`plab'"', color("`pcol'") size(medsmall)) ///
                  legend(off) graphregion(color(white)) ///
                  name(`sub`j'', replace) nodraw
         local subnames `subnames' `sub`j''

@@ -1,44 +1,57 @@
-*! panelline v1.0  2Jun2026
+*! panelline v1.1  8Jun2026
 *! Small-multiples line plot (FT-style): one time-series sub-plot per group,
 *! drawn on a shared y-axis, with an optional end-point dot on each line.
 *!
 *! Syntax:
 *!   panelline yvar , over(panelvar) time(timevar) [ options ]
 *!
-*! Required:
+*! ---- required ----
 *!   over(varname)      panel/group variable (one sub-plot per level)
 *!   time(varname)      x-axis (time) variable
 *!
-*! Options:
+*! ---- layout ----
 *!   cols(#)            number of columns (default: auto)
-*!   noenddot           do not draw the end-point dot
-*!   lcolor(string)     line color for all panels (default "31 119 180")
-*!   colors(string)     explicit colour per panel as value=colour pairs, e.g.
-*!                      colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)
-*!   lwidth(string)     line width (default medium)
-*!   dotcolor(string)   end-dot color (default = lcolor)
-*!   dotsize(string)    end-dot size (default medium)
 *!   noycommon          let each panel scale its own y-axis (default: shared)
+*!
+*! ---- line & end-dot ----
+*!   lcolor(string)     line colour for all panels (default "31 119 180")
+*!   bycolors(string)   explicit colour per panel, as value=colour pairs, e.g.
+*!                      bycolors(North=navy South=forest_green West=gs7)
+*!                      (colors() is kept as a backward-compatible alias)
+*!   lwidth(string)     line width (default medium)
+*!   noenddot           do not draw the end-point dot
+*!   dotcolor(string)   end-dot colour (default = line colour)
+*!   dotsize(string)    end-dot size (default medium)
+*!
+*! ---- axes & titles ----
 *!   ylabel(string)     y-axis label rule applied to every panel
 *!   xlabel(string)     x-axis label rule applied to every panel
+*!   ytitle(string)     y-axis title (default = yvar label)
 *!   title(string)      overall graph title
 *!   subtitle(string)   overall subtitle
-*!   ytitle(string)     y-axis title (default = yvar label)
+*!
+*! ---- output ----
 *!   saving(string)     export path
 *!   name(string)       graph window name (default panelline)
 
 program define panelline
     version 16.0
-    syntax varname(numeric) [if] [in], Over(varname) Time(varname) ///
-        [ COLs(integer 0) NOENDdot LColor(string) LWidth(string) ///
-          COLORS(string asis) DOTColor(string) DOTSize(string) NOYCommon ///
-          YLABel(string asis) XLABel(string asis) ///
-          title(string asis) SUBtitle(string asis) YTITle(string asis) ///
+    syntax varname(numeric) [if] [in], Over(varname) Time(varname)       ///
+        [                                                                ///
+          COLs(integer 0) NOYCommon                                      /// layout
+          LColor(string) BYColors(string asis) COLORS(string asis)       /// line colour
+          LWidth(string) NOENDdot DOTColor(string) DOTSize(string)       /// width & end-dot
+          YLABel(string asis) XLABel(string asis) YTITle(string asis)    /// axes
+          title(string asis) SUBtitle(string asis)                       /// titles
           saving(string) name(string) ]
 
     marksample touse
     markout `touse' `over' `time'
     local y `varlist'
+
+    * bycolors() is the documented name; colors() kept as backward-compatible alias
+    if `"`bycolors'"'=="" local bycolors `"`colors'"'
+    local colors `"`bycolors'"'
 
     if "`lcolor'"   == "" local lcolor "31 119 180"
     if "`lwidth'"   == "" local lwidth "medium"

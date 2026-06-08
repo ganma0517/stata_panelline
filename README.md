@@ -67,7 +67,7 @@ panelline yvar [if] [in], over(panelvar) time(timevar) [options]
 | `time(varname)` | x-axis time variable (required) | — |
 | `cols(#)` | number of columns | auto |
 | `lcolor()` `lwidth()` | line color (all panels) / width | blue / medium |
-| `colors()` | explicit colour per panel, e.g. `colors(KMT=blue DPP=green TPP=gs8)` | — |
+| `bycolors()` | explicit colour per panel, e.g. `bycolors(North=navy South=forest_green)` (alias `colors()`) | — |
 | `noenddot` | hide the end-point dot | off |
 | `dotcolor()` `dotsize()` | end-dot color / size | line color / medium |
 | `noycommon` | per-panel y-axis (default: shared) | shared |

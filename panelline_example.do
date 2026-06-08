@@ -20,6 +20,11 @@ panelline hours, over(band) time(time) xlabel(2014 2024) ///
 * 3) No end dot, custom color and width
 panelline hours, over(band) time(time) noenddot lcolor(cranberry) lwidth(thin)
 
+* 3b) Give specific panels their own colour (value=colour pairs; keys are the
+*     panel's value label or its raw level). colors() is an alias for bycolors().
+panelline hours, over(band) time(time) xlabel(2014 2024) ///
+    bycolors(1=navy 2=forest_green 3=orange)
+
 * 4) Each panel on its own y-axis
 panelline hours, over(band) time(time) noycommon
 
